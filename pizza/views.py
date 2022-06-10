@@ -16,9 +16,9 @@ def order(request):
             created_pizza = filled_form.save()
             created_pizza_pk = created_pizza.id
             
-            size = filled_form.cleaned_data['size']
-            topping1 = filled_form.cleaned_data['topping1']
-            topping2 = filled_form.cleaned_data['topping2']
+            size = filled_form.cleaned_data.get('size')
+            topping1 = filled_form.cleaned_data.get('topping1')
+            topping2 = filled_form.cleaned_data.get('topping2')
             
             messages.success(request, f'Thanks for ordering! Your {size}, {topping1} and {topping2} pizza is on its way!')
             
@@ -37,14 +37,14 @@ def pizzas(request):
     number_of_pizzas = 2
     filled_multiple_pizza_form = MultiplePizzaForm(request.GET)
     if filled_multiple_pizza_form.is_valid():
-        number_of_pizzas = filled_multiple_pizza_form.cleaned_data['number']
+        number_of_pizzas = filled_multiple_pizza_form.cleaned_data.get('number')
     PizzaFormSet = formset_factory(PizzaForm, extra=number_of_pizzas)
     formset = PizzaFormSet()
     if request.method == "POST":
         filled_formset = PizzaFormSet(request.POST)
-        if(filled_formset.is_valid()):
+        if filled_formset.is_valid():
             for form in filled_formset:
-                print(form.cleaned_data['topping1'])
+                form.save()
             messages.success(request, 'Pizzas have been ordered!')
             
         else:
